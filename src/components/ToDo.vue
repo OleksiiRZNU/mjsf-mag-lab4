@@ -27,7 +27,7 @@
                 <h4 v-else>{{item.title}}</h4>
                 <p>{{item.description}}</p>
               </div>
-              <button class="btn btn-primary" @click="item.status = 'completed' ">Compled</button>
+              <button class="btn btn-primary" @click="updateTask(item)">Completed</button>
             </li>
           </ul>
         </div>
@@ -47,7 +47,8 @@
 </template>
 
 <script>
-  import {Task} from '../models/task';
+  import {Task} from '../models/task.ts';
+  import {task} from "@vue/cli-plugin-eslint/ui/taskDescriptor";
   export default {
     name: "ToDo",
     props: {},
@@ -66,18 +67,27 @@
     },
     methods: {
       submit() {
-        this.$services.todo.save(this.model).then((res)=>{
-          this.taskList.push(res);
-          this.model = new Task();
-        })
+        this.$services.todo.create(this.model)
+            .then(() => this.$services.todo.fetch())
+            .then(todos => this.taskList = todos)
+            .then(() => this.model = new Task())
+      },
+      updateTask(task) {
+        task.status = Task.TS_COMPLETED;
+        this.$services.todo.save(task)
+            .then(() => this.$services.todo.fetch())
+            .then(todos => this.taskList = todos)
       }
     },
     watch: {
       message() {
-        console.log("Nessage changed");
+        console.log("Message changed");
       }
     },
     computed: {
+      task() {
+        return task
+      },
       messageLength() {
         return ("" + this.message).length;
       },

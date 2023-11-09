@@ -10,15 +10,17 @@
   </div>
 </template>
 
-<script>
-import Home from "./views/home/Home";
+<script lang="ts">
+import Vue from 'vue';
+import Home from "./views/home/Home.vue";
 
-export default {
+
+export default Vue.extend({
   name: 'App',
   components: {
-     Home
+    Home,
   }
-}
+});
 </script>
 
 <style>
@@ -26,4 +28,5 @@ export default {
 #app{
   display: block;
 }
+
 </style>
